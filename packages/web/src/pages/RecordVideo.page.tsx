@@ -184,11 +184,9 @@ const RecordVideo: React.FC<RecordVideoProps> = () => {
       </Overlay>
       {recording && <Count>{seconds}</Count>}
       <Webcam
-        audio={false}
+        audio={true}
         height={720}
         ref={webcamRef}
-        screenshotFormat="image/jpeg"
-        width={1280}
         videoConstraints={{ facingMode: "user" }}
       />
     </Container>
