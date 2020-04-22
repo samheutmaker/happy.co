@@ -55,7 +55,7 @@ const Count = styled.div`
   z-index: 2000;
 `;
 
-type RecordVideoProps = {};
+
 
 const VIDEO_LENGTH: number = 3;
 
@@ -67,7 +67,7 @@ function convertObjectURLToFile(objectUrl: string) {
   return new Promise((resolve) => {
     const xhr = new XMLHttpRequest();
     xhr.open("GET", objectUrl);
-    xhr.responseType = "blob"; // force the HTTP response, response-type header to be blob
+    xhr.responseType = "blob"; 
     xhr.onload = function () {
       const blob = xhr.response;
       blob.lastModifiedDate = new Date();
@@ -77,6 +77,13 @@ function convertObjectURLToFile(objectUrl: string) {
     xhr.send();
   });
 }
+
+type StartRecordingParams = {
+  stream: MediaStream;
+  length: number;
+  onStart: () => Function;
+  onInterval?: Function;
+};
 
 function startRecording(params: StartRecordingParams) {
   const { stream, length, onStart } = params;
@@ -101,23 +108,18 @@ function startRecording(params: StartRecordingParams) {
   });
 
   const recorded = wait(length).then(
-    () => recorder.state == "recording" && recorder.stop()
+    () => recorder.state === "recording" && recorder.stop()
   );
 
   return Promise.all([stopped, recorded]).then(() => data);
 }
 
-type StartRecordingParams = {
-  stream: MediaStream;
-  length: number;
-  onStart: () => Function;
-  onInterval?: Function;
-};
+type RecordVideoProps = {};
 
 const RecordVideo: React.FC<RecordVideoProps> = () => {
   const [recording, setRecording] = useState(false);
   const [seconds, setSeconds] = useState(0);
-  const webcamRef = React.useRef(null);
+  const webcamRef = useRef<any>(null);
 
   const [uploadFiles, { data, loading, error }] = useMutation(UPLOAD_FILES, {
     onCompleted: data => {
@@ -126,9 +128,11 @@ const RecordVideo: React.FC<RecordVideoProps> = () => {
     onError: error => console.error(error),
   });
 
-  const record = React.useCallback(async () => {
+  const record = useCallback(async () => {
     try {
-      const video = (webcamRef.current as any).video;
+      if (!webcamRef || !webcamRef.current) return;
+
+      const video: any = webcamRef.current.video;
       const recordedChunks = await startRecording({
         stream: video.captureStream(),
         length: VIDEO_LENGTH * 1000,
@@ -150,17 +154,11 @@ const RecordVideo: React.FC<RecordVideoProps> = () => {
       const recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
       const videoURL = URL.createObjectURL(recordedBlob);
       const file = await convertObjectURLToFile(videoURL);
-      console.log(file);
       uploadFiles({
         variables: {
           files: [file]
         }
       });
-      // const a = document.createElement("a");
-      // document.body.appendChild(a);
-      // a.href = videoURL;
-      // a.download = "Recorded.webm";
-      // a.click();
     } catch (e) {
       console.error(e);
     }
