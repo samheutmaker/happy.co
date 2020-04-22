@@ -1,9 +1,9 @@
-import React, { useState, useRef, useCallback } from 'react';
-import styled from 'styled-components';
+import React, { useState, useRef, useCallback } from "react";
+import styled from "styled-components";
 import Webcam from "react-webcam";
-import * as Polished from 'polished';
+import * as Polished from "polished";
 import { Colors } from "../styles/Colors";
-import Button, { ButtonTypes } from './../elements/Button';
+import Button, { ButtonTypes } from "./../elements/Button";
 
 const Container = styled.div`
   border-radius: 5px;
@@ -15,15 +15,14 @@ const Container = styled.div`
     width: 100%;
     object-fit: cover;
   }
-`;  
-
+`;
 
 type OverlayProps = {
   active: boolean;
 };
 
 const Overlay = styled.div<OverlayProps>`
-  display: ${props => props.active ? 'flex' : 'none'};
+  display: ${(props) => (props.active ? "flex" : "none")};
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -39,7 +38,6 @@ const Message = styled.div`
   line-height: 150%;
   color: ${Colors.White};
   width: 400px;
-
 `;
 
 const Count = styled.div`
@@ -55,55 +53,82 @@ type RecordVideoProps = {};
 
 const VIDEO_LENGTH: number = 3;
 
+function wait(delayInMS: number) {
+  return new Promise((resolve) => setTimeout(resolve, delayInMS));
+}
+
+type StartRecordingParams = {
+  stream: MediaStream;
+  length: number;
+  onStart: () => Function;
+  onInterval?: Function;
+};
+
+function startRecording(params: StartRecordingParams) {
+  const { stream, length, onStart } = params;
+
+  const options = { mimeType: "video/webm; codecs=vp9" };
+  const recorder = new MediaRecorder(stream, options);
+  const data: any[] = [];
+
+  recorder.ondataavailable = (event: BlobEvent) => {
+    data.push(event.data);
+  };
+
+  const onEnd = onStart();
+  recorder.start();
+
+  const stopped = new Promise((resolve, reject) => {
+    recorder.onstop = () => {
+      onEnd();
+      resolve();
+    };
+    recorder.onerror = (event: MediaRecorderErrorEvent) => reject(event);
+  });
+
+  const recorded = wait(length).then(
+    () => recorder.state == "recording" && recorder.stop()
+  );
+
+  return Promise.all([stopped, recorded]).then(() => data);
+}
 
 const RecordVideo: React.FC<RecordVideoProps> = () => {
   const [recording, setRecording] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const webcamRef = React.useRef(null);
-  const record = React.useCallback(() => {
-    setRecording(true);
+  const record = React.useCallback(async () => {
+    try {
+      const video = (webcamRef.current as any).video;
+      const recordedChunks = await startRecording({
+        stream: video.captureStream(),
+        length: VIDEO_LENGTH * 1000,
+        onStart: () => {
+          setRecording(true);
+          setSeconds(0);
+          const interval = setInterval(() => {
+            setSeconds((seconds) => seconds + 1);
+          }, 1000);
 
-    const canvas = (webcamRef.current as any).getCanvas();
-    const stream = canvas.captureStream(25);
-    const recordedChunks: Blob[] = [];
-    const options = { mimeType: "video/webm; codecs=vp9" };
-    const mediaRecorder = new MediaRecorder(stream, options);
+          return () => {
+            setRecording(false);
+            setSeconds(0);
+            clearInterval(interval);
+          };
+        },
+      });
 
-    mediaRecorder.ondataavailable = (event) => {
-      console.log("DATA AVAILABLE");
-      if (event.data.size > 0) {
-        console.log(event.data);
-        console.log(event.data.size);
-        recordedChunks.push(event.data);
-        const blob = new Blob(recordedChunks, {
-          type: "video/webm",
-        });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        document.body.appendChild(a);
-        a.href = url;
-        a.download = "test.webm";
-        a.click();
-        // window.URL.revokeObjectURL(url);
-      } else {
-        console.error('There was an error: No event data');
-      }
-    };
-
-    mediaRecorder.start();
-
-    const interval = setInterval(() => {
-      setSeconds(seconds => seconds + 1);
-    }, 1000);
-    
-    setTimeout(() => {
-      setRecording(false);
-      setSeconds(0);
-      mediaRecorder.stop();
-      clearInterval(interval);
-    }, VIDEO_LENGTH*1000);
-
-  },[webcamRef]);
+      const recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
+      const videoURL = URL.createObjectURL(recordedBlob);
+      const a = document.createElement("a");
+      document.body.appendChild(a);
+      a.href = videoURL;
+      a.download = "Recorded.webm";
+      a.click();
+    } catch (e) {
+      console.error(e);
+    }
+  }, [webcamRef]);
 
   return (
     <Container>
@@ -111,7 +136,7 @@ const RecordVideo: React.FC<RecordVideoProps> = () => {
         <Message>
           Before we begin, we're going to take a 10 second video recording.
           Press the button below when you're ready.
-          <br/>
+          <br />
           <Button
             type={ButtonTypes.Submit}
             onClick={() => record()}
@@ -132,6 +157,6 @@ const RecordVideo: React.FC<RecordVideoProps> = () => {
       />
     </Container>
   );
-}
+};
 
 export default RecordVideo;
