@@ -11,6 +11,7 @@ import VerifyEmail from "./pages/VerifyEmail.page";
 import DashboardLayout from './components/DashboardLayout';
 import ProjectList from './pages/ProjectList.page';
 import Loader, { LoaderSizes } from './elements/Loader';
+import RecordVideo from './components/RecordVideo';
 import { Colors } from './styles/Colors';
 
 const Container = styled.div`
@@ -88,6 +89,7 @@ export default function App() {
       <Container>
         <Switch>
           <Redirect exact from="/" to="/login" />
+          <Route path="/record" component={RecordVideo} />
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
           <Route path="/forgot-password" component={ForgotPassword} />
