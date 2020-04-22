@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
-import MainNavigation from './MainNavigation';
+import { useHistory } from 'react-router-dom';
 import { Colors } from "../styles/Colors";
+import * as Auth from "../utils/Auth";
 
 const Container = styled.div`
   position: absolute;
@@ -22,9 +23,18 @@ type DashboardLayoutProps = {
 };
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
+  const history = useHistory();
+
+  useEffect(() => {
+    const token = Auth.getToken();
+    if(!token) {
+      history.replace('/login');
+    }
+  }, []);
+
   return (
     <Container>
-      <MainNavigation />
+      {/* <MainNavigation /> */}
       <Content>{children}</Content>
     </Container>
   );

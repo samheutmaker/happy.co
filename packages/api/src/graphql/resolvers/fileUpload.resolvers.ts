@@ -27,6 +27,7 @@ export default {
       }
       
       const files: IFile[] = await Promise.all(args.files.map(async file => {
+        console.log(file);
         const { createReadStream, mimetype, filename, encoding} = await file;
         
         const buffer: Buffer = await streamToBuffer(createReadStream());

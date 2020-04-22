@@ -10,6 +10,11 @@ export function getToken(): string | null {
   return localStorage.getItem(SOUNDPACK_AUTH_TOKEN);
 }
 
+export function login(token: string, history: any) {
+  setToken(token);
+  history.push('/dashboard');
+}
+
 export async function logout() {
   localStorage.clear();
   // persistor.pause();

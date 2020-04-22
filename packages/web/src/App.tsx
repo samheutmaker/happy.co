@@ -9,9 +9,8 @@ import ResetPassword from "./pages/ResetPassword.page";
 import VerifyEmail from "./pages/VerifyEmail.page";
 //Dasbhoard
 import DashboardLayout from './components/DashboardLayout';
-import ProjectList from './pages/ProjectList.page';
+import RecordVideo from "./pages/RecordVideo.page";
 import Loader, { LoaderSizes } from './elements/Loader';
-import RecordVideo from './components/RecordVideo';
 import { Colors } from './styles/Colors';
 
 const Container = styled.div`
@@ -32,7 +31,7 @@ const PageLoaderContainer = styled.div<PageLoaderProps>`
   align-items: center;
   justify-content: center;
   background-color: ${Colors.White};
-  z-index: 1000;
+  z-index: 10000;
   visibility: ${props => (props.fade ? "hidden" : null)};
   opacity: ${props => (props.fade ? 0 : null)};
   transition: ${props =>
@@ -58,11 +57,8 @@ function DashboardContainer({ match }: any) {
   return (
     <DashboardLayout>
       <Switch>
-        <Redirect exact from={`${match.path}/`} to={`${match.path}/projects`} />
-        <Route exact path={`${match.path}/projects`} component={ProjectList} />
-        {/* <Route path={`${match.path}/events`} component={EventDetailsContainer} />
-        <Route path={`${match.path}/orders`} component={OrdersContainer} />
-        <Route path={`${match.path}/settings`} component={SettingsContainer} /> */}
+        <Redirect exact from={`${match.path}/`} to={`${match.path}/record`} />
+        <Route exact path={`${match.path}/record`} component={RecordVideo} />
       </Switch>
     </DashboardLayout>
   );
@@ -89,7 +85,6 @@ export default function App() {
       <Container>
         <Switch>
           <Redirect exact from="/" to="/login" />
-          <Route path="/record" component={RecordVideo} />
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
           <Route path="/forgot-password" component={ForgotPassword} />

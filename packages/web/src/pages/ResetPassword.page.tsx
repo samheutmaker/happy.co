@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useMutation } from "@apollo/react-hooks";
+import { useHistory } from "react-router-dom";
 import Joi from "@hapi/joi";
 import queryString from "query-string";
 import Button, { ButtonTypes } from "../elements/Button";
@@ -47,6 +48,8 @@ const ResetPasswordPage: React.FC<ResetPasswordPageProps> = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [codeIsInvalid, setCodeIsInvalid] = useState(false);
 
+  const history = useHistory();
+
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrorsInternal] = useState({
     password: null,
@@ -86,7 +89,7 @@ const ResetPasswordPage: React.FC<ResetPasswordPageProps> = () => {
       resetPasswordCode
     },
     onCompleted: async ({ resetPassword: { token } }) => {
-      await Auth.setToken(token);
+      await Auth.login(token, history);
     },
     onError: async error => {
       const errorMsg = ErrorUtil.getErrorMessage(error);

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { useHistory } from 'react-router-dom';
 import { useMutation } from "@apollo/react-hooks";
 import queryString from "query-string";
 import Button, { ButtonTypes } from "../elements/Button";
@@ -28,14 +29,13 @@ const LoaderContainer = styled.div`
   margin-bottom: 40px;
 `;
 
-type VerifyEmailPageProps = {
-  history: any;
-};
+type VerifyEmailPageProps = {};
 
-const VerifyEmailPage: React.FC<VerifyEmailPageProps> = ({ history }) => {
+const VerifyEmailPage: React.FC<VerifyEmailPageProps> = () => {
   const [codeIsInvalid, setCodeIsInvalid] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const history = useHistory();
   const { code: verifyEmailCode }: UrlParams = queryString.parse(
     window.location.search
   );

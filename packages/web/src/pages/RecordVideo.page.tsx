@@ -1,9 +1,11 @@
 import React, { useState, useRef, useCallback } from "react";
 import styled from "styled-components";
-import Webcam from "react-webcam";
 import * as Polished from "polished";
+import { useMutation } from "@apollo/react-hooks";
+import Webcam from "react-webcam";
+import UPLOAD_FILES from '../graphql/mutations/uploadFiles.mutation';
 import { Colors } from "../styles/Colors";
-import Button, { ButtonTypes } from "./../elements/Button";
+import Button, { ButtonTypes } from "../elements/Button";
 
 const Container = styled.div`
   border-radius: 5px;
@@ -37,7 +39,11 @@ const Message = styled.div`
   font-size: 1.8rem;
   line-height: 150%;
   color: ${Colors.White};
-  width: 400px;
+  width: 90%;
+
+  @media screen and (min-width: 768px) {
+    width: 400px;
+  }
 `;
 
 const Count = styled.div`
@@ -57,12 +63,20 @@ function wait(delayInMS: number) {
   return new Promise((resolve) => setTimeout(resolve, delayInMS));
 }
 
-type StartRecordingParams = {
-  stream: MediaStream;
-  length: number;
-  onStart: () => Function;
-  onInterval?: Function;
-};
+function convertObjectURLToFile(objectUrl: string) {
+  return new Promise((resolve) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", objectUrl);
+    xhr.responseType = "blob"; // force the HTTP response, response-type header to be blob
+    xhr.onload = function () {
+      const blob = xhr.response;
+      blob.lastModifiedDate = new Date();
+      blob.name = "new";
+      resolve(new File([blob], "recording.webm"));
+    };
+    xhr.send();
+  });
+}
 
 function startRecording(params: StartRecordingParams) {
   const { stream, length, onStart } = params;
@@ -93,10 +107,25 @@ function startRecording(params: StartRecordingParams) {
   return Promise.all([stopped, recorded]).then(() => data);
 }
 
+type StartRecordingParams = {
+  stream: MediaStream;
+  length: number;
+  onStart: () => Function;
+  onInterval?: Function;
+};
+
 const RecordVideo: React.FC<RecordVideoProps> = () => {
   const [recording, setRecording] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const webcamRef = React.useRef(null);
+
+  const [uploadFiles, { data, loading, error }] = useMutation(UPLOAD_FILES, {
+    onCompleted: data => {
+      console.log(data)
+    },
+    onError: error => console.error(error),
+  });
+
   const record = React.useCallback(async () => {
     try {
       const video = (webcamRef.current as any).video;
@@ -120,11 +149,18 @@ const RecordVideo: React.FC<RecordVideoProps> = () => {
 
       const recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
       const videoURL = URL.createObjectURL(recordedBlob);
-      const a = document.createElement("a");
-      document.body.appendChild(a);
-      a.href = videoURL;
-      a.download = "Recorded.webm";
-      a.click();
+      const file = await convertObjectURLToFile(videoURL);
+      console.log(file);
+      uploadFiles({
+        variables: {
+          files: [file]
+        }
+      });
+      // const a = document.createElement("a");
+      // document.body.appendChild(a);
+      // a.href = videoURL;
+      // a.download = "Recorded.webm";
+      // a.click();
     } catch (e) {
       console.error(e);
     }

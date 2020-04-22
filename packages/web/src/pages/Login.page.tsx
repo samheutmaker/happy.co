@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useMutation } from "@apollo/react-hooks";
+import { useHistory } from "react-router-dom";
 import Joi from "@hapi/joi";
 import Button, { ButtonTypes } from "../elements/Button";
 import LabeledInput from "../elements/LabeledInput";
@@ -43,12 +44,15 @@ type LoginPageProps = {};
 const LoginPage: React.FC<LoginPageProps> = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  
 
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrorsInternal] = useState({
     email: null,
     password: null,
   });
+
+  const history = useHistory();
 
   const eventHandler = makeEventHandler(() => setError(""));
 
@@ -75,7 +79,7 @@ const LoginPage: React.FC<LoginPageProps> = () => {
       password,
     },
     onCompleted: async ({ login: { token } }) => {
-      await Auth.setToken(token);
+      await Auth.login(token, history);
     },
     onError: async error => {
       const errorMsg = ErrorUtil.getErrorMessage(error);

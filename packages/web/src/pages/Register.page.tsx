@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useMutation } from "@apollo/react-hooks";
+import { useHistory } from "react-router-dom";
 import Joi from "@hapi/joi";
 import Button, { ButtonTypes } from "../elements/Button";
 import LabeledInput from "../elements/LabeledInput";
@@ -81,6 +82,7 @@ const RegisterPage: React.FC<RegisterPageProps> = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const history = useHistory();
 
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrorsInternal] = useState({
@@ -135,7 +137,7 @@ const RegisterPage: React.FC<RegisterPageProps> = () => {
       }
     },
     onCompleted: async ({ register: { token } }) => {
-      await Auth.setToken(token);
+      await Auth.login(token, history);
     },
     onError: async (error) => {
       const errorMsg = ErrorUtil.getErrorMessage(error);

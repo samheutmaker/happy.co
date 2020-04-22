@@ -6,6 +6,7 @@ import { connect } from 'mongoose';
 import authenticate from './util/middleware/authenticate';
 import cors from './util/middleware/cors';
 import { executableSchema as schema } from './graphql/schema';
+import { graphqlUploadExpress } from 'graphql-upload';
 import {
   MONGO_DB_HOST,
   MONGO_DB_PORT,
@@ -43,10 +44,12 @@ export default class App {
     this.app.use(cors);
     this.app.use(json());
     this.app.use(authenticate);
+    this.app.use(graphqlUploadExpress());
   }
 
   private initializeApollo() {
     const server = new ApolloServer({
+      uploads: false,
       schema,
       context: req => ({
         req: req.req,
