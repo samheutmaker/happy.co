@@ -10,6 +10,7 @@ import VerifyEmail from "./pages/VerifyEmail.page";
 //Dasbhoard
 import DashboardLayout from './components/DashboardLayout';
 import RecordVideo from "./pages/RecordVideo.page";
+import Survey from './pages/Survey.page';
 import Loader, { LoaderSizes } from './elements/Loader';
 import { Colors } from './styles/Colors';
 
@@ -91,6 +92,7 @@ export default function App() {
           <Route path="/reset-password" component={ResetPassword} />
           <Route path="/verify-email" component={VerifyEmail} />
           <Route path="/dashboard" component={DashboardContainer} />
+          <Route path="/survey" component={Survey} />
         </Switch>
       </Container>
     </Fragment>

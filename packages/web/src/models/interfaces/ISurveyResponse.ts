@@ -1,5 +1,5 @@
-import { ESurveyType } from './Survey';
-import { ESurveyStepType } from './SurveyStep';
+import { ESurveyType } from './ISurvey';
+import { ESurveyStepType } from './ISurveyStep';
 
 enum ESurveyStepAnswerType {
   Text = 'Text',
@@ -8,29 +8,29 @@ enum ESurveyStepAnswerType {
   FileUrl = 'FileUrl',
 }
 
-interface SurveryStepAnswer {
+interface ISurveryStepAnswer {
   type: ESurveyStepAnswerType;
   text?: string;
   value?: number | string | File;
 }
 
-interface SurveyStepResponse {
+interface ISurveyStepResponse {
   type: ESurveyStepType;
   name?: string;
   text?: string;
   durationInSeconds?: number;
-  answers?: SurveryStepAnswer[];
-  responses?: SurveyStepResponse[];
+  answers?: ISurveryStepAnswer[];
+  responses?: ISurveyStepResponse[];
 }
 
-export default interface SurveyResponse {
+export default interface ISurveyResponse {
   type: ESurveyType;
   userId: string;
   surveyId: string;
-  responses: SurveyStepResponse[];
+  responses: ISurveyStepResponse[];
 }
 
-const response: SurveyResponse = {
+const response: ISurveyResponse = {
   type: ESurveyType.Big5ExtraShort,
   userId: "123",
   surveyId: "123",

@@ -1,33 +1,21 @@
-import { AppActionTypes, AppActionCreatorTypes } from '../actions/app.actions';
+import { PurchasePortalActionTypes, PurchasePortalActionCreatorTypes } from '../actions/app.actions';
 
-type AppReducerState = {
-  searchQuery: string;
+type PurchasePortalReducerState = {
+  intercomEnabled: boolean;
 };
 
-function appReducerState(): AppReducerState {
+function purchasePortalReducerState(): PurchasePortalReducerState {
   return {
-    searchQuery: '',
+    intercomEnabled: false,
   };
 }
 
-export default function reducer(state = appReducerState(), action: AppActionCreatorTypes) {
-  const { type, payload } = action;
+export default function reducer(state = purchasePortalReducerState(), action: PurchasePortalActionCreatorTypes) {
+  return state;
+  // const { type, payload } = action;
 
-  switch (type) {
-    case AppActionTypes.SET_SEARCH_QUERY:
-      return setSearchQuery(state, payload);
-
-    default:
-      return state;
-  }
+  // switch (type) {
+  //   default:
+  //     return state;
+  // }
 }
-
-function setSearchQuery(
-  state: AppReducerState, 
-  { searchQuery }: { searchQuery: string } 
-): AppReducerState {
-  return {
-    ...state,
-    searchQuery,
-  };
-};

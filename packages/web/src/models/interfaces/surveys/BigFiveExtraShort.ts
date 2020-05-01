@@ -1,7 +1,7 @@
-import Survey, { ESurveyType } from '../Survey';
-import { ESurveyStepType } from "../SurveyStep";
+import ISurvey, { ESurveyType } from '../ISurvey';
+import { ESurveyStepType } from "../ISurveyStep";
 
-const Big5ExtraShortSurvey: Survey = {
+const Big5ExtraShortSurvey: ISurvey = {
   type: ESurveyType.Big5ExtraShort,
   name: "Big 5 Extra Short",
   description: "A super short version of the Big 5 personality test",

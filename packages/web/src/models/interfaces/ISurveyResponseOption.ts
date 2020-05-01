@@ -1,4 +1,4 @@
-export default interface SurveyResponseOption {
+export default interface ISurveyResponseOption {
   text: string;
   value: string | number;
   maxValue?: number;
