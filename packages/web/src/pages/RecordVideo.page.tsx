@@ -7,7 +7,6 @@ import UPLOAD_FILES from '../graphql/mutations/uploadFiles.mutation';
 import { Colors } from "../styles/Colors";
 import Button, { ButtonTypes } from "../elements/Button";
 
-
 const Container = styled.div`
   border-radius: 5px;
   overflow: hidden;
@@ -55,8 +54,6 @@ const Count = styled.div`
   color: ${Colors.White};
   z-index: 2000;
 `;
-
-
 
 const VIDEO_LENGTH: number = 3;
 

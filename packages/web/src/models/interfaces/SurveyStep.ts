@@ -1,4 +1,4 @@
-import SurveryAnswer from './SurveyAnswer';
+import SurveyResponseOption from './SurveyResponseOption';
 
 export enum ESurveyStepType {
   AVRecording = 'Audio/Video Recording',
@@ -13,5 +13,5 @@ export default interface SurveyStep {
   text: string;
   durationInSeconds?: number;
   steps?: SurveyStep[];
-  answer?: SurveryAnswer;
+  options?: SurveyResponseOption[];
 }
