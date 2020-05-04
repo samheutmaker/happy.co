@@ -4,6 +4,7 @@ import ISurveyResponse from '../../models/interfaces/ISurveyResponse';
 
 export const SurveyActionTypes = {
   CREATE_SURVEY_RESPONSE: "CREATE_SURVEY_RESPONSE",
+  BEGIN_SURVEY_RESPONSE: "BEGIN_SURVEY_RESPONSE",
 };
 
 /****************************************************************************************
@@ -28,5 +29,26 @@ export function createSurveyResponse(survey: ISurvey, userId: string): CreateSur
   };
 }
 
+/****************************************************************************************
+  Begin Survey Response
+****************************************************************************************/
+
+export interface BeginSurveyResponseAction {
+  type: typeof SurveyActionTypes.BEGIN_SURVEY_RESPONSE;
+  payload: {
+    survey: ISurvey,
+  };
+}
+
+export function beginSurveyResponse(survey: ISurvey): BeginSurveyResponseAction {
+  return {
+    type: SurveyActionTypes.BEGIN_SURVEY_RESPONSE,
+    payload: {
+      survey,
+    }
+  };
+}
+
 export type SurveyActionCreatorTypes =
   | CreateSurveyResponseAction
+  | BeginSurveyResponseAction

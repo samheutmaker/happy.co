@@ -469,11 +469,11 @@ export default class UserController implements IUserAPI {
     let response: IGetUserResponse;
 
     const schema = Joi.object().keys({
-      userId: Joi.string().required()
+      auth: authenticatedSchema,
     });
 
     const params = Joi.validate(request, schema);
-    const { userId }: { userId: string } = params.value;
+    const { auth: { userId } }: { auth: { userId: string}  } = params.value;
 
     if (params.error) {
       console.error(params.error);

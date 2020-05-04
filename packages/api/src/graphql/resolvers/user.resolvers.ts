@@ -2,6 +2,7 @@ import StatusCodeEnum from '../../models/enums/StatusCodeEnum';
 import {
   ApolloError,
 } from 'apollo-server-express';
+import IUser from "@soundpack/models/.dist/interfaces/IUser";
 import controller from '../../controllers/controller';
 import {
   IGetUserRequest,
@@ -21,11 +22,11 @@ import {
 export default {
   Query: {
     async user(parent, args, context) {
-      const { userId } = parent;
-
+      const { req: { user: { userId } } } = context;
+  
       const request: IGetUserRequest = {
         auth: {
-          userId
+          userId: parent && parent.userId ? parent.userId : userId,
         }
       };
 

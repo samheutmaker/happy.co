@@ -12,7 +12,7 @@ const rootReducer = combineReducers({
   survey: surveyReducer,
 });
 
-export type PurchasePortalState = ReturnType<typeof rootReducer>;
+export type HappyState = ReturnType<typeof rootReducer>;
 
 const store = createStore(
   rootReducer,

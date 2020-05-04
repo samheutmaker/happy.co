@@ -18,7 +18,8 @@ interface ISurveyStepResponse {
   type: ESurveyStepType;
   name?: string;
   text?: string;
-  durationInSeconds?: number;
+  startedAt?: number;
+  endedAt?: number;
   answers?: ISurveryStepAnswer[];
   responses?: ISurveyStepResponse[];
 }
@@ -40,7 +41,8 @@ const response: ISurveyResponse = {
       name: "Video Recording",
       text:
         "We are going to take a 30 second audio and video recording before the test begins, during which you will be asked 5 questions. Answer the questions out loud. Stay centered in the video as best you can.",
-      durationInSeconds: 30,
+      startedAt: 30,
+      endedAt: 10,
       answers: [
         {
           type: ESurveyStepAnswerType.File,
@@ -53,7 +55,8 @@ const response: ISurveyResponse = {
           type: ESurveyStepType.QAOutloud,
           name: "Question #1",
           text: "What is your full name?",
-          durationInSeconds: 6,
+          startedAt: 6,
+          endedAt: 10,
           answers: [
             {
               type: ESurveyStepAnswerType.File,
@@ -66,7 +69,8 @@ const response: ISurveyResponse = {
           type: ESurveyStepType.QAOutloud,
           name: "Question #2",
           text: "What is your date of birth?",
-          durationInSeconds: 6,
+          startedAt: 6,
+          endedAt: 10,
           answers: [
             {
               type: ESurveyStepAnswerType.File,
@@ -79,7 +83,8 @@ const response: ISurveyResponse = {
           type: ESurveyStepType.QAOutloud,
           name: "Question #3",
           text: "What is your favoriate food?",
-          durationInSeconds: 6,
+          startedAt: 6,
+          endedAt: 10,
           answers: [
             {
               type: ESurveyStepAnswerType.File,
@@ -92,7 +97,8 @@ const response: ISurveyResponse = {
           type: ESurveyStepType.QAOutloud,
           name: "Question #4",
           text: "What is your favorite color?",
-          durationInSeconds: 6,
+          startedAt: 6,
+          endedAt: 10,
           answers: [
             {
               type: ESurveyStepAnswerType.File,
@@ -105,7 +111,8 @@ const response: ISurveyResponse = {
           type: ESurveyStepType.QAOutloud,
           name: "Question #5",
           text: "What country do you live in?",
-          durationInSeconds: 6,
+          startedAt: 6,
+          endedAt: 10,
           answers: [
             {
               type: ESurveyStepAnswerType.File,
@@ -120,7 +127,8 @@ const response: ISurveyResponse = {
       type: ESurveyStepType.InstructionsWithNextButton,
       name: "Start Test Intro",
       text: "Great! You are ready to begin the final step.",
-      durationInSeconds: 10,
+      startedAt: 10,
+      endedAt: 10,
     },
     // Question #1
     {
