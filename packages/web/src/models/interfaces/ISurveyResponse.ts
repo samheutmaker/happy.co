@@ -1,28 +1,8 @@
 import { ESurveyType } from './ISurvey';
-import { ESurveyStepType } from './ISurveyStep';
+import ESurveyStepType from '../enums/ESurveyStepType';
+import ISurveyStepResponse from './ISurveyStepResponse';
+import ESurveyStepAnswerType from './../enums/ESurveyStepAnswerType';
 
-enum ESurveyStepAnswerType {
-  Text = 'Text',
-  Number = 'Number',
-  File = 'File',
-  FileUrl = 'FileUrl',
-}
-
-interface ISurveryStepAnswer {
-  type: ESurveyStepAnswerType;
-  text?: string;
-  value?: number | string | File;
-}
-
-interface ISurveyStepResponse {
-  type: ESurveyStepType;
-  name?: string;
-  text?: string;
-  startedAt?: number;
-  endedAt?: number;
-  answers?: ISurveryStepAnswer[];
-  responses?: ISurveyStepResponse[];
-}
 
 export default interface ISurveyResponse {
   type: ESurveyType;
